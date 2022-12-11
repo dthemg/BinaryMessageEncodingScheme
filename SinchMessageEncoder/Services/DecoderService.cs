@@ -87,18 +87,16 @@ public sealed class DecoderService: IDecoderService
         message.Headers.Add(headerName, headerValue);
     }
 
-    private static byte[] ReadPayload(ref byte[] encodedMessage, int startingIndex)
+    private static byte[] ReadPayload(ref byte[] encodedMessage, int payloadIndicatorIndex)
     {
-        var payloadSize = encodedMessage.Length - 1 - startingIndex;
+        var startOfPayloadIndex = payloadIndicatorIndex + 1;
+        var payloadSize = encodedMessage.Length - startOfPayloadIndex;
         if (payloadSize > Constants.MaxPayloadSize)
         {
             throw new ArgumentException($"Payload size {payloadSize} exceeds maximum " +
                 $"size of {Constants.MaxPayloadSize}");
         }
 
-        return encodedMessage
-            .Skip(startingIndex + 1)
-            .Take(encodedMessage.Length - 1 - startingIndex)
-            .ToArray();
+        return  encodedMessage[startOfPayloadIndex..];
     }
 }

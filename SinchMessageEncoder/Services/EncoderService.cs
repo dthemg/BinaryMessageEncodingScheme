@@ -37,8 +37,8 @@ public sealed class EncoderService: IEncoderService
 
         foreach (var headerEntry in messageToEncode.Headers)
         {
-            if (Encoding.UTF8.GetByteCount(headerEntry.Key) == headerEntry.Key.Length ||
-                Encoding.UTF8.GetByteCount(headerEntry.Value) == headerEntry.Value.Length)
+            if (Encoding.UTF8.GetByteCount(headerEntry.Key) != headerEntry.Key.Length ||
+                Encoding.UTF8.GetByteCount(headerEntry.Value) != headerEntry.Value.Length)
             {
                 throw new ArgumentException("Header keys and values must contain ASCII-only characters");
             }
@@ -47,8 +47,6 @@ public sealed class EncoderService: IEncoderService
 
     private static void AppendHeaderKeyToMessage(ref List<byte> encodedMessage, string headerNameToAppend)
     {
-        
-
         if (string.IsNullOrEmpty(headerNameToAppend))
         {
             throw new ArgumentException("Header key is empty");
