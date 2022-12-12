@@ -64,7 +64,7 @@ public sealed class DecoderService: IDecoderService
          return Encoding.ASCII.GetString(
             encodedMessage,
             startingIndex,
-            stoppingIndex - startingIndex);
+            headerSize);
     }
 
     private static void AddHeader(ref Message message, string headerName, string headerValue)

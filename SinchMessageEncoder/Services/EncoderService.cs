@@ -6,10 +6,6 @@ namespace SinchMessageEncoder.Services;
 
 public sealed class EncoderService: IEncoderService
 {
-    private const int MaxHeaderCount = 63;
-    private const int MaxHeaderSize = 1023;
-    private const int MaxPayloadSize = 256 * 1024;
-
     public byte[] EncodeMessage(Message messageToEncode)
     {
         ValidateHeaders(messageToEncode);
@@ -26,13 +22,12 @@ public sealed class EncoderService: IEncoderService
         return encodedMessage.ToArray();
     }
 
-
     private static void ValidateHeaders(Message messageToEncode)
     {
-        if (messageToEncode.Headers.Count > MaxHeaderCount)
+        if (messageToEncode.Headers.Count > Constants.MaxHeaderCount)
         {
             throw new ArgumentException($"Number of message headers {messageToEncode.Headers.Count} " +
-                $"exceeds the maximum number of headers {MaxHeaderCount}");
+                $"exceeds the maximum number of headers {Constants.MaxHeaderCount}");
         }
 
         foreach (var headerEntry in messageToEncode.Headers)
@@ -44,7 +39,6 @@ public sealed class EncoderService: IEncoderService
             }
         }
     }
-
     private static void AppendHeaderKeyToMessage(ref List<byte> encodedMessage, string headerNameToAppend)
     {
         if (string.IsNullOrEmpty(headerNameToAppend))
@@ -64,10 +58,10 @@ public sealed class EncoderService: IEncoderService
 
     private static void AppendPayloadToMessage(ref List<byte> encodedMessage, byte[] payload)
     {
-        if (payload.Length > MaxPayloadSize)
+        if (payload.Length > Constants.MaxPayloadSize)
         {
             throw new ArgumentException($"Payload too large; size {payload.Length} " +
-                $"exceeds maximum size {MaxPayloadSize}");
+                $"exceeds maximum size {Constants.MaxPayloadSize}");
         }
 
         encodedMessage.Add(Constants.StartOfPayload);
@@ -77,10 +71,10 @@ public sealed class EncoderService: IEncoderService
     private static void AddStringToMessage(ref List<byte> encodedMessage, string headerToAppend)
     {
         var encodedHeader = Encoding.ASCII.GetBytes(headerToAppend);
-        if (encodedHeader.Length > MaxHeaderSize)
+        if (encodedHeader.Length > Constants.MaxHeaderSize)
         {
             throw new ArgumentException($"Message header key has size {encodedHeader.Length}, " +
-                $"exceeds maximum size {MaxHeaderSize}");
+                $"exceeds maximum size {Constants.MaxHeaderSize}");
         }
         encodedMessage.AddRange(encodedHeader);
     }
