@@ -21,8 +21,13 @@ will result in the following sequence
 a b KVD c d EOH e f KVD g h EOH SOP 129 1 231
 ```
 
+## Assumptions
+* ASCII only uses the first 7 bits of each byte so a delimiter (`KVD`, `EOH`, `SOP` above) needs to be between 128 and 255, given that we place the payload at the end of the message.
+* Empty header values and empty payloads should be permitted, but not empty header names
+* Binary messages should be validated during decoding (i.e. we can't be sure that this is the only encoder/decoder in existence)
+
 ## Design choices
 
 * Implemented encoder/decoder as separate classes to adhere to SRP
-* Focus on tests, error handling and keeping the code clean over performance
+* Focused on tests, error handling and keeping the code clean over performance
 * Complexity-wise the parsing should scale O(n) with the size of the message
